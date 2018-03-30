@@ -1,11 +1,16 @@
 //This will not work on its own but is what needs to be integrated into the Phasic 18.edited
+#include "fastLED.h"
+#define numLED 25 // how many do we want
+#define LEDType WS2801 //What type are they? i found this number on the internet
 
 void setup() {
   // put your setup code here, to run once:
 //LED Lights on Feedback Device
 //Pin to hook LED's to, need to use an PWM Pin for Fade
 const int ledPin = 5;
+const int Clock = 6; //pin for clock
 pinMode(ledPin, OUTPUT); // set as an output
+pinMode(
 int howbright = 0; //determines the brightness of the LED set from 0 to 255
 int fadeFactor = 51; //constant to multiply number associated with flow type by. 
 // States of Flow type- number associated with eact type to multiply fade factor by
@@ -16,8 +21,13 @@ int fadeFactor = 51; //constant to multiply number associated with flow type by.
  // High, 4
  // VeryHigh 5
  int endbright = 0; //The end level of brightness its transitioning too when going to a new state, eventually howbright is set equal to this
-  unsigned long currentMilli = millis();
-  unsigned long previousMilli = 0;
+ unsigned long currentMilli = millis();
+ unsigned long previousMilli = 0;
+
+//for fastLED
+LEDS.addLeds<LEDType, ledPin, Clock, RGB>(leds, numLED);
+FastLED.clear();
+int i = 0;
 }
 //either looking at flow or flowNow
 //if ActionType == Hello set to very low .5(fadeFactor)
@@ -27,6 +37,20 @@ void loop() {
   //These methods should be called anytime you want to check if you need to change the status of the light. 
 setBrightness();
 turnOnLights();
+if (i == numLED){
+  i=0;//reset numLED
+}
+while((previousMilli + 10) > currentMilli) && (i<numLED) {
+  leds[i] = CHSV(howBright, 255, map(howBright,255,255,255,howBright); //I'm not sure about the map
+  i = i+1;
+  previousMilli = currentMilli;
+  FastLED.show();
+  
+}
+  
+}
+
+
 }
 
 //turns light to dimmness scale 1-5 based on flow rate. 
